@@ -54,6 +54,29 @@ impl<K: Ord, V> Node<K, V> {
         }
     }
 
+    pub fn nth_key_value<'a>(
+        root: &'a Option<Box<Node<K, V>>>,
+        k: &mut usize,
+    ) -> Option<(&'a K, &'a V)> {
+        if root.is_none() {
+            return None;
+        }
+
+        let left = Self::nth_key_value(&root.as_ref().unwrap().left, k);
+
+        if left.is_some() {
+            return left;
+        }
+
+        if *k == 0 {
+            return Some((&root.as_ref()?.key, &root.as_ref()?.val));
+        } else {
+            *k -= 1;
+        }
+
+        return Self::nth_key_value(&root.as_ref().unwrap().right, k);
+    }
+
     fn extract_min(
         mut root: Option<Box<Node<K, V>>>,
     ) -> (Option<Box<Node<K, V>>>, Option<Box<Node<K, V>>>) {
